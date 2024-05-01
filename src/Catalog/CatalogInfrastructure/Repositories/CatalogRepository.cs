@@ -24,7 +24,8 @@ public class CatalogRepository : ICatalogRepository
     }
     public async Task<int> CreateItem(CatalogItem item)
     {
-        _context.AttachRange(item.Sizes);
+        item.Sizes = await _context.Sizes.Where(s => item.Sizes.Select(s => s.Id).Contains(s.Id))
+            .ToListAsync();
         _context.Items.Add(item);
         await _context.SaveChangesAsync();
         return item.Id;
@@ -81,7 +82,11 @@ public class CatalogRepository : ICatalogRepository
         return await itemsQuery.ProjectTo<CatalogItemDTO>(_mapper.ConfigurationProvider)
             .ToPagedList(query.Page, query.PageSize);
     }
-    
+
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync();
+    }
 }
 
 file static class GenderExtensions

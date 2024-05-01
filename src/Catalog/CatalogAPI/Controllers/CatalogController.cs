@@ -4,6 +4,7 @@ using CatalogApplication.DTOs;
 using CatalogApplication.Features.CatalogItem.Commands.DeleteCatalogItem;
 using CatalogApplication.Features.CatalogItem.Commands.UpdateCatalogItem;
 using CatalogApplication.Features.Command;
+using CatalogApplication.Features.Commands.AddColorToItem;
 using CatalogApplication.Features.Queries;
 using CatalogApplication.Features.Queries.GetCatalogItems;
 using CatalogApplication.Features.Size.Queries;
@@ -30,13 +31,13 @@ public class CatalogController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<int>> CreateCatalogItem(CreateItemDTO itemDTO)
     {
-        var id = await _mediator.Send(new CreateCatalogItemCommand { CatalogItem = _mapper.Map<CatalogItem>(itemDTO)});
+        var id = await _mediator.Send( new CreateCatalogItemCommand{  CatalogItem = _mapper.Map<CatalogItem>(itemDTO)});
         return Ok(new {CreatedId = id});
     }
-    [HttpGet("{Id:int}")]
-    public async Task<ActionResult<CatalogItemDTO>> GetCatalogItemById(int Id)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<CatalogItemDTO>> GetCatalogItemById(int id)
     {
-        var item = await _mediator.Send(new GetCatalogItemByIdQuery { Id = Id});
+        var item = await _mediator.Send(new GetCatalogItemByIdQuery { Id = id});
         return item is null ? NotFound() : Ok(item);
     }
     [HttpDelete("{id:int}")]
@@ -64,5 +65,13 @@ public class CatalogController : ControllerBase
         Response.Headers.Append("pagination-xxx", result.GetPaginationHeaders());
 
         return result;
+    }
+
+    [HttpPost("{id:int}")]
+    public async Task<ActionResult> AddColor(int id, string color, IFormFile file)
+    {
+        await using var stream = file.OpenReadStream();
+        await _mediator.Send(new AddColorCommand { Id = id, Color = color, Stream = stream });
+        return NoContent();
     }
 }

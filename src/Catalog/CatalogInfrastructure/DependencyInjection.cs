@@ -1,4 +1,5 @@
 ﻿using CatalogApplication.Contracts;
+using CatalogInfrastructure.Contracts;
 using CatalogInfrastructure.Persistence;
 using CatalogInfrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,5 +17,6 @@ public static class DependencyInjection
             opt.UseNpgsql(config.GetConnectionString("default"));
         });
         services.AddScoped<ICatalogRepository, CatalogRepository>();
+        services.AddScoped<IFileUploader, FileUploader>();
     }
 }

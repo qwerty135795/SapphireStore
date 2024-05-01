@@ -12,20 +12,12 @@ public class CreateItemDTO
     public string Name { get; set; }
     [Required(ErrorMessage = "{0} is Required")]
     public string Category { get; set; }
-    private Gender _gender = Gender.Unisex;
+    
+    protected internal Gender gender = Gender.Unisex;
     [Required]
     [JsonPropertyName("gender")]
-    public string ItemGender {
-     get { return Enum.GetName(typeof(Gender), _gender)!;}
-     set 
-     {
-        _gender = value.ToLower() switch {
-            "female" => Gender.Female,
-            "male" => Gender.Male,
-            _ => Gender.Unisex
-        };
-     }
-    }
+    [JsonConverter(typeof(JsonStringEnumConverter<Gender>))]
+    public Gender ItemGender { get; set; }
     [Required]
     [MaxLength(500)]
     public string Description { get; set; }
@@ -33,5 +25,4 @@ public class CreateItemDTO
     [Range(5, int.MaxValue, ErrorMessage = "Value for {0} must be between {1} and {2}")]
     public decimal Price { get; set; }
     public List<SizeDTO> Sizes { get; set; }
-    public List<Color> Colors { get; set; }
 }

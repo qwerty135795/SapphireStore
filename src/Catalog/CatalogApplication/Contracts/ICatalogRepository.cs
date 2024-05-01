@@ -13,4 +13,5 @@ public interface ICatalogRepository
     Task UpdateItem(UpdateCatalogItemCommand item);
     Task<List<SizeDTO>> GetSizes();
     Task<PagedList<CatalogItemDTO>> GetCatalog(GetCatalogItemsQuery query);
+    Task<int> SaveChangesAsync();
 }

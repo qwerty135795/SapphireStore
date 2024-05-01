@@ -10,6 +10,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddRouting(opt =>
+{
+    opt.LowercaseUrls = true;
+    opt.LowercaseQueryStrings = true;
+});
+builder.Services.AddCors(build => build.AddDefaultPolicy(conf =>
+{
+    conf.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200").Build();
+}));
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 var app = builder.Build();
 
@@ -20,6 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();

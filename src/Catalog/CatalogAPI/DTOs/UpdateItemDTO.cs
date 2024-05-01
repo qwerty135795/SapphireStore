@@ -12,14 +12,15 @@ public class UpdateItemDTO
     public string Name { get; set; }
     [Required(ErrorMessage = "{0} is Required")]
     public string Category { get; set; }
-    private Gender _gender = Gender.Unisex;
+    protected internal Gender gender = Gender.Unisex;
     [Required]
     [JsonPropertyName("gender")]
-    public string ItemGender {
-        get { return Enum.GetName(typeof(Gender), _gender)!;}
+    public string ItemGender
+    {
+        get => Enum.GetName(typeof(Gender), gender)!;
         set 
         {
-            _gender = value.ToLower() switch {
+            gender = value.ToLower() switch {
                 "female" => Gender.Female,
                 "male" => Gender.Male,
                 _ => Gender.Unisex
