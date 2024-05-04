@@ -25,4 +25,5 @@ public class CreateItemDTO
     [Range(5, int.MaxValue, ErrorMessage = "Value for {0} must be between {1} and {2}")]
     public decimal Price { get; set; }
     public List<SizeDTO> Sizes { get; set; }
+    public ColorDTO ColorDto { get; set; }
 }

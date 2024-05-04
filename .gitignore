@@ -12,7 +12,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+/rabbitmq/*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 Migrations/

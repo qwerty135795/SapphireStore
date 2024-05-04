@@ -10,6 +10,7 @@ using CatalogApplication.Features.Queries.GetCatalogItems;
 using CatalogApplication.Features.Size.Queries;
 using CatalogDomain.Aggregates;
 using CatalogInfrastructure.Extensions;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,9 +30,12 @@ public class CatalogController : ControllerBase
         _mapper = mapper;
     }
     [HttpPost]
-    public async Task<ActionResult<int>> CreateCatalogItem(CreateItemDTO itemDTO)
+    public async Task<ActionResult<int>> CreateCatalogItem([FromForm]CreateItemDTO itemDTO)
     {
-        var id = await _mediator.Send( new CreateCatalogItemCommand{  CatalogItem = _mapper.Map<CatalogItem>(itemDTO)});
+        await using var stream = itemDTO.ColorDto.File.OpenReadStream(); 
+        var command = _mapper.Map<CreateCatalogItemCommand>(itemDTO);
+        command.ColorStream = stream;
+        var id = await _mediator.Send( command );
         return Ok(new {CreatedId = id});
     }
     [HttpGet("{id:int}")]
@@ -61,7 +65,6 @@ public class CatalogController : ControllerBase
     public async Task<ActionResult<List<CatalogItemDTO>>> GetCatalogItems([FromQuery]GetCatalogItemsQuery request)
     {
         var result = await _mediator.Send(request);
-
         Response.Headers.Append("pagination-xxx", result.GetPaginationHeaders());
 
         return result;

@@ -13,5 +13,7 @@ public class MapperProfile : Profile
     {
         CreateMap<CreateItemDTO, CatalogItem>();
         CreateMap<UpdateItemDTO, UpdateCatalogItemCommand>();
+        CreateMap<CreateItemDTO, CreateCatalogItemCommand>().ForMember(o => o.Color,
+            src => src.MapFrom(path => path.ColorDto.Color));
     }
 }
